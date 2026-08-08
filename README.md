@@ -1,4 +1,4 @@
-<h1 align="center">XWA — X Web Analyzer</h1>
+<h1 align="center">XWA — X Web Analysis</h1>
 
 <div align="center">
 <p><em>Modular web analysis ecosystem — each tool lives in its own repository under the <a href="https://github.com/xwebanalysis">xwebanalysis</a> organization.</em></p>
@@ -17,7 +17,7 @@
 | [kabuki](https://github.com/xwebanalysis/kabuki) | WAF and CDN analysis | TBD | Planned |
 | [yari](https://github.com/xwebanalysis/yari) | API security testing | TBD | Planned |
 | [musha](https://github.com/xwebanalysis/musha) | Web content and DOM analysis | TBD | Planned |
-| [azuma](https://github.com/xwebanalysis/azuma) | Web form and authentication flow analyzer | TBD | Planned |
+| [azuma](https://github.com/xwebanalysis/azuma) | Web form and authentication flow analyzer | Angular + FastAPI/Python | In development |
 | [xwa-sdk](https://github.com/xwebanalysis/xwa-sdk) | Shared data schemas and API contracts | TBD | Planned |
 | [meta](https://github.com/xwebanalysis/meta) | Ecosystem docs, roadmap, orchestration | — | — |
 
