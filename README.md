@@ -14,15 +14,12 @@
 | [shinobi](https://github.com/xwebanalysis/shinobi) | Stealth web scraping with anti-blocking | Rust (Axum) + Angular + Python extractor | Released |
 | [tengu](https://github.com/xwebanalysis/tengu) | Web quality auditor | Rust (Axum) + Angular | Released |
 | [kensei](https://github.com/xwebanalysis/kensei) | Web technology stack profiler | Angular + FastAPI/Python | Planned |
+| [kabuki](https://github.com/xwebanalysis/kabuki) | WAF and CDN analysis | TBD | Planned |
+| [yari](https://github.com/xwebanalysis/yari) | API security testing | TBD | Planned |
+| [musha](https://github.com/xwebanalysis/musha) | Web content and DOM analysis | TBD | Planned |
+| [azuma](https://github.com/xwebanalysis/azuma) | Web form and authentication flow analyzer | TBD | Planned |
 | [xwa-sdk](https://github.com/xwebanalysis/xwa-sdk) | Shared data schemas and API contracts | TBD | Planned |
-| [meta](https://github.com/xwebanalysis/meta) | This repo — ecosystem docs, roadmap, orchestration | — | — |
-
-## Planned Tools
-
-- **kabuki** — WAF and CDN analysis
-- **yari** — API security testing
-- **musha** — Web content and DOM analysis
-- **azuma** — Web form and authentication flow analyzer
+| [meta](https://github.com/xwebanalysis/meta) | Ecosystem docs, roadmap, orchestration | — | — |
 
 ## Getting Started
 
