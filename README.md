@@ -16,7 +16,7 @@
 | [kensei](https://github.com/xwebanalysis/kensei) | Web technology stack profiler | Angular + FastAPI/Python | Planned |
 | [kabuki](https://github.com/xwebanalysis/kabuki) | WAF and CDN analysis | TBD | Planned |
 | [yari](https://github.com/xwebanalysis/yari) | API security testing | TBD | Planned |
-| [musha](https://github.com/xwebanalysis/musha) | Web content and DOM analysis | TBD | Planned |
+| [musha](https://github.com/xwebanalysis/musha) | Web content and DOM analysis | Angular + FastAPI/Python | In development |
 | [azuma](https://github.com/xwebanalysis/azuma) | Web form and authentication flow analyzer | Angular + FastAPI/Python | In development |
 | [xwa-sdk](https://github.com/xwebanalysis/xwa-sdk) | Shared data schemas and API contracts | TBD | Planned |
 | [meta](https://github.com/xwebanalysis/meta) | Ecosystem docs, roadmap, orchestration | — | — |
