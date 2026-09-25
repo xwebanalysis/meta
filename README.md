@@ -34,11 +34,16 @@ cd <tool>
 When the whole ecosystem is checked out side by side, a single workspace orchestrator starts everything:
 
 ```bash
-./xwa.sh up                # start all apps on distinct ports
-./xwa.sh status            # health of every module
-./xwa.sh down              # stop everything
-./verify.sh                # run the full test suite (pytest + cargo + npm)
+./meta/xwa.sh up           # start all apps on distinct ports
+./meta/xwa.sh status       # health of every module
+./meta/xwa.sh down         # stop everything
+./meta/verify.sh           # run the full test suite (pytest + cargo + npm)
 ```
+
+Both scripts live in this repository (run them from the directory that
+contains all the tool repos checked out side by side) and need no Docker:
+they create per-tool venvs, install `xwa-sdk` editably and start every
+backend on its XWA port plus the Angular dev servers.
 
 | App | Backend | Frontend | Storage |
 |-----|--------:|---------:|---------|
