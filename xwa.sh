@@ -110,13 +110,19 @@ start_app() {
   fi
   mkdir -p "$LOG_DIR" "$PID_DIR"
 
-  ( cd "$ROOT_DIR/$(spec_field "$app" 3)" && nohup sh -c "$(spec_field "$app" 4)" \
-      > "$LOG_DIR/$app-backend.log" 2>&1 & echo $! > "$PID_DIR/$app.pid" )
+  (
+    cd "$ROOT_DIR/$(spec_field "$app" 3)" || exit 1
+    nohup sh -c "$(spec_field "$app" 4)" > "$LOG_DIR/$app-backend.log" 2>&1 &
+    echo $! > "$PID_DIR/$app.pid"
+  )
   echo -e "${GREEN}[up] $app: backend starting (log: .xwa-run/logs/$app-backend.log)${NC}"
 
   if [ "$(spec_field "$app" 2)" = "python" ] && [ "$(spec_field "$app" 5)" != "-" ]; then
-    ( cd "$ROOT_DIR/$(spec_field "$app" 5)" && nohup npm start \
-      > "$LOG_DIR/$app-frontend.log" 2>&1 & echo $! > "$PID_DIR/$app-frontend.pid" )
+    (
+      cd "$ROOT_DIR/$(spec_field "$app" 5)" || exit 1
+      nohup npm start > "$LOG_DIR/$app-frontend.log" 2>&1 &
+      echo $! > "$PID_DIR/$app-frontend.pid"
+    )
     echo -e "${GREEN}[up] $app: frontend starting (port $(spec_field "$app" 7))${NC}"
   fi
 }
@@ -130,7 +136,9 @@ stop_app() {
   for pidfile in "$PID_DIR/$app.pid" "$PID_DIR/$app-frontend.pid"; do
     [ -f "$pidfile" ] || continue
     pid="$(cat "$pidfile" 2>/dev/null)"
-    [ -n "$pid" ] && kill "$pid" 2>/dev/null
+    if [ -n "$pid" ]; then
+      kill "$pid" 2>/dev/null && had=1
+    fi
     rm -f "$pidfile"
   done
 
