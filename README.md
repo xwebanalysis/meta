@@ -65,3 +65,9 @@ Docker Compose remains available per tool (`./<tool>.sh docker`) for PostgreSQL-
 - [Local development](docs/development.md)
 - [Deployment](docs/deployment.md)
 - [ROADMAP](ROADMAP.md) for cross-module integration plans
+- [Licensing](LICENSING.md) for the license status of every repository
+
+## License
+
+Proprietary — All rights reserved. See [LICENSE](LICENSE) for the full terms.
+For permission requests: x@xscriptor.com
