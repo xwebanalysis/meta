@@ -25,6 +25,7 @@ PID_DIR="$RUN_DIR/pids"
 GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RED='\033[0;31m'; NC='\033[0m'
 
 PYTHON="${PYTHON:-python3}"
+UV_BIN="${UV_BIN:-$(command -v uv 2>/dev/null || echo "$HOME/.local/bin/uv")}"
 XWA_SDK="$ROOT_DIR/xwa-sdk/bindings/python"
 
 # Spec table: app|kind|backend_dir|backend_cmd|frontend_dir|health_url|frontend_port
@@ -36,7 +37,7 @@ azuma|python|azuma/backend|.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 
 kabuki|python|kabuki/backend|.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8040|kabuki/frontend|http://localhost:8040/api/health|4240
 yari|python|yari/backend|.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8050|yari/frontend|http://localhost:8050/api/health|4250
 shinobi|rust|shinobi|cargo run|shinobi/frontend|http://localhost:8060/api/health|4260
-tengu|rust|tengu|cargo run|tengu/frontend|http://localhost:8070/api/health|4270
+tengu|python|tengu/backend|.venv/bin/python -m tengu --host 0.0.0.0 --port 8070|-|http://localhost:8070/api/health|-
 SPECEOF
 )"
 
@@ -55,6 +56,11 @@ resolve_apps() {
 
 bootstrap_python() {
   local app="$1" dir="$ROOT_DIR/$(spec_field "$app" 3)"
+  if [ -f "$dir/pyproject.toml" ]; then
+    [ -x "$UV_BIN" ] || { echo -e "${RED}[bootstrap] $app: uv not found; set UV_BIN${NC}"; return 1; }
+    ( cd "$dir" && "$UV_BIN" sync --extra test ) || return 1
+    return 0
+  fi
   if [ ! -x "$dir/.venv/bin/python" ]; then
     echo -e "${YELLOW}[bootstrap] $app: creating venv${NC}"
     "$PYTHON" -m venv "$dir/.venv" || { echo -e "${RED}[bootstrap] $app: venv failed${NC}"; return 1; }
@@ -71,6 +77,7 @@ bootstrap_python() {
 
 bootstrap_node() {
   local app="$1" dir="$ROOT_DIR/$(spec_field "$app" 5)"
+  [ "$dir" = "$ROOT_DIR/-" ] && return 0
   if [ ! -d "$dir/node_modules" ]; then
     echo -e "${YELLOW}[bootstrap] $app: npm install (frontend)${NC}"
     ( cd "$dir" && npm install --no-audit --no-fund ) || return 1
@@ -107,7 +114,7 @@ start_app() {
       > "$LOG_DIR/$app-backend.log" 2>&1 & echo $! > "$PID_DIR/$app.pid" )
   echo -e "${GREEN}[up] $app: backend starting (log: .xwa-run/logs/$app-backend.log)${NC}"
 
-  if [ "$(spec_field "$app" 2)" = "python" ]; then
+  if [ "$(spec_field "$app" 2)" = "python" ] && [ "$(spec_field "$app" 5)" != "-" ]; then
     ( cd "$ROOT_DIR/$(spec_field "$app" 5)" && nohup npm start \
       > "$LOG_DIR/$app-frontend.log" 2>&1 & echo $! > "$PID_DIR/$app-frontend.pid" )
     echo -e "${GREEN}[up] $app: frontend starting (port $(spec_field "$app" 7))${NC}"
@@ -128,7 +135,7 @@ stop_app() {
   done
 
   for port in "$(spec_field "$app" 6 | sed 's#.*localhost:##;s#/.*##')" "$(spec_field "$app" 7)"; do
-    [ -z "$port" ] && continue
+    [ -z "$port" ] || [ "$port" = "-" ] && continue
     for p in $(lsof -ti "tcp:$port" 2>/dev/null); do
       kill "$p" 2>/dev/null
       had=1

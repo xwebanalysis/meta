@@ -14,6 +14,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RED='\033[0;31m'; NC='\033[0m'
 PYTHON="${PYTHON:-python3}"
+UV_BIN="${UV_BIN:-$(command -v uv 2>/dev/null || echo "$HOME/.local/bin/uv")}"
 
 PASS=0; FAIL=0; FAILED_APPS=()
 
@@ -32,6 +33,11 @@ check() {
 
 bootstrap_python_backend() {
   local app="$1" dir="$ROOT_DIR/$app/backend"
+  if [ -f "$dir/pyproject.toml" ]; then
+    [ -x "$UV_BIN" ] || { echo "uv not found; set UV_BIN"; return 1; }
+    ( cd "$dir" && "$UV_BIN" sync --extra test ) || return 1
+    return 0
+  fi
   [ -x "$dir/.venv/bin/python" ] || "$PYTHON" -m venv "$dir/.venv" || return 1
   "$dir/.venv/bin/pip" install -q --upgrade pip >/dev/null 2>&1
   "$dir/.venv/bin/pip" install -q -r "$dir/requirements.txt" || return 1
@@ -79,8 +85,12 @@ for app in $APPS; do
       verify_python_app "$app"
       verify_angular_app "$app"
       ;;
-    shinobi|tengu)
+    shinobi)
       verify_rust_app "$app"
+      verify_angular_app "$app"
+      ;;
+    tengu)
+      verify_python_app "$app"
       verify_angular_app "$app"
       ;;
     xwa-sdk)
